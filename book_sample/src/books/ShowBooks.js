@@ -64,8 +64,8 @@ const ShowBooks = () => {
                 {/* dinamicko kreiranje opcija - posto ne znamo unapred koje sve zanrove imamo nego ih dobavljamo sa back-end-a - koristimo map funkciju koja nam objekte zanr pretvori u html element option; html element option obavezno zahteva atribut value jer na osnovu njega posle mozemo da izvucemo koja opcija je selektovana */}
                 {genres.map((g) => <option value={g.id}> {g.name} </option>)}
             </select>
-
-            <button> <NavLink to='new_book'> Add new book </NavLink> </button>
+            {/* dodato dugme za dodavanje nove knjige, klikom na dugme prikazuje se forma za unos nove knjige */}
+            <button className="new_btn"> <NavLink className="new_btn_link" to='new_book'> Add new book </NavLink> </button>
         </header>
         <div className="books_container"> 
         {/* Kontejner za prikaz svih knjiga, posto se knjige prikazuju u vidu kartica, a to nije jednostavan html element, onda mozemo da tu jednu karticu predstavimo novom komponentom, u nasem slucaju je to komponenta ShowBook i toj komponenti prosledjujemo knjigu koju treba da prikaze.

@@ -7,6 +7,8 @@ import { RouterProvider, createBrowserRouter } from 'react-router-dom';
 import ShowBooks from './books/ShowBooks';
 import ShowAuthors from './authors/ShowAuthors';
 import ShowGenres from './genre/ShowGenres';
+import BookForm from './books/BookForm';
+import BookDetails from './books/BookDetails';
 
 // 1. definisete rute
 // 2. render zamenite App sa RouterProvider-om
@@ -45,9 +47,32 @@ const router = createBrowserRouter([
       {
         path:'/genres',
         element:<ShowGenres/>
+      },
+      {
+        path: 'books/new_book',
+        element: <BookForm/>,
+        loader: async () => {
+          // dobavim autore
+          const authors_r = await fetch('http://localhost:8080/api/v1/author');
+          const authors = await authors_r.json();
+          // dobavim zanrove 
+          const genres_r = await fetch('http://localhost:8080/api/v1/genre');
+          const genres = await genres_r.json();
+
+          return [authors, genres];
+        }
+      }, 
+      {
+// putanja koja prikazuje jednu knjigu
+        path: 'books/book/:id',
+        element: <BookDetails/>,
+        loader: async ({params}) => {
+          return fetch(`http://localhost:8080/api/v1/book/${params.id}`);
+        }
       }
     ]
   }, 
+  
 
 ])
 /* 
