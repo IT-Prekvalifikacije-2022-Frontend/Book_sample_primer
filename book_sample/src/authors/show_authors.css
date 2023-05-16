@@ -1,0 +1,68 @@
+/* stil za prikaz svih autora */
+
+.authors_container_header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    
+    padding: 20px;
+    height: 40px;
+    background-color: #fff;
+  }
+  
+  /*
+  ispod zaglavlja u delu za glavni sadrzaj se nalazi kontejner za brzi pregled nekih stavki aplikacije 
+  - ovde je upotrebljen grid raspored i broj kolona ce biti definisan na osnovu sadrzaja koji se nadje u 
+  ovom kontejneru, ali ni jedna kolona nece biti ispod 265px 
+  */
+  .container_show_authors {
+    display: flex;
+    flex-direction: column;
+    margin: 20px;
+  }
+  
+
+  /* input[type=text]:focus{
+    border-radius: 4px;
+    border: 3px solid whitesmoke;
+    background-color: whitesmoke;
+  } */
+
+  .select_genre{
+    padding: 10px;
+    width: 35%;
+    border-radius: 4px;
+    border: 1px solid whitesmoke;
+  }
+
+  .add_btn{
+    padding: 10px;
+    border-radius: 4px;
+    border: 1px solid rgb(28, 165, 200);
+    background-color: #fff;
+    color: rgb(28, 165, 200);
+    font-weight: bold;
+  }
+  .author_input-container {
+    display: flex;
+    width: 40%;
+    margin-bottom: 0px;
+  }
+  
+  .author_input-field {
+    flex: 1;
+    padding: 10px;
+    border: 0.3px solid #ccc;
+    border-radius: 4px  0px 0px 4px;
+    position: relative;
+  }
+  
+  .author_search_button {
+    padding: 10px 20px;
+    background-color: #ccc;
+    color: white;
+    border: none;
+    border: 1px solid #ccc;
+    border-radius: 0px 4px 4px 0px;
+    cursor: pointer; /* Add some space between input field and button */
+  }

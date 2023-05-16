@@ -46,7 +46,10 @@ const router = createBrowserRouter([
       },
       {
         path:'/genres',
-        element:<ShowGenres/>
+        element:<ShowGenres/>,
+        loader: async () => {
+          return fetch('http://localhost:8080/api/v1/genre');
+        }
       },
       {
         path: 'books/new_book',

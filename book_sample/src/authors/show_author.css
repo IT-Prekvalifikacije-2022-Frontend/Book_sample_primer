@@ -1,0 +1,36 @@
+.author_overviewcard {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: #fff;
+    border: 1px solid gray;
+    border-radius: 5px;
+    margin-bottom: 10px;
+  }
+
+  .author_title_container {
+    color: gray;
+    background-color: whitesmoke;
+    width: 100%;
+    border-radius: 5px 5px 0px 0px;
+    border: 1px solid gray;
+  }
+
+  .author__info{
+    display: flex;
+    justify-content: start;
+    padding: 5px;
+    width: 100%;
+    margin-left: 20px;
+  }
+
+  .author_title {
+    /* padding: 3px; */
+    text-align: center;
+    font-size: 15px;
+    font-weight: bold;
+  }
+
+  .book_authors{
+    font-weight: bold;
+  }

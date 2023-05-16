@@ -1,0 +1,61 @@
+.container_show_genres{
+    display: flex;
+    justify-content: center;
+    align-content: center;
+    flex-wrap: wrap;
+    height: 80%;
+    width: 80%;
+}
+
+.genres_overviewcard {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 0%;
+    width: 25%;
+  }
+
+
+
+.genre_item{
+    color: black;
+    background-color: white;
+    width: 100%;
+    border: 1px solid #ccc;
+    border-bottom: 0px;
+    list-style-type: none;
+    padding: 5%;
+}
+
+.genre_item:first-of-type{
+    border-radius: 4px 4px 0px 0px;
+}
+
+.genre_item:last-of-type{
+    border-radius: 0px 0px 4px 4px;
+    border-bottom: 1px solid #ccc;
+}
+
+.genre_input-container {
+    display: flex;
+    width: 40%;
+    margin-bottom: 0px;
+  }
+  
+  .genre_input-field {
+    flex: 1;
+    padding: 10px;
+    border: 0.3px solid #ccc;
+    border-radius: 4px  0px 0px 4px;
+    position: relative;
+  }
+  
+  .genre_search_button {
+    padding: 10px 20px;
+    background-color: #ccc;
+    color: white;
+    border: none;
+    border: 1px solid #ccc;
+    border-radius: 0px 4px 4px 0px;
+    cursor: pointer; /* Add some space between input field and button */
+  }
