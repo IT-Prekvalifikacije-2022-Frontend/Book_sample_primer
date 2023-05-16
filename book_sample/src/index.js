@@ -9,6 +9,8 @@ import ShowAuthors from './authors/ShowAuthors';
 import ShowGenres from './genre/ShowGenres';
 import BookForm from './books/BookForm';
 import BookDetails from './books/BookDetails';
+import AuthorForm from './authors/AuthorForm';
+import GenreForm from './genre/GenreForm';
 
 // 1. definisete rute
 // 2. render zamenite App sa RouterProvider-om
@@ -71,7 +73,16 @@ const router = createBrowserRouter([
         element: <BookDetails/>,
         loader: async ({params}) => {
           return fetch(`http://localhost:8080/api/v1/book/${params.id}`);
-        }
+        },
+       
+      },
+      {
+        path:'authors/add_new', 
+        element: <AuthorForm/>
+      },
+      {
+        path:'genres/add_new', 
+        element: <GenreForm/>
       }
     ]
   }, 
