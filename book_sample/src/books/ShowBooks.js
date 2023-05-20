@@ -78,19 +78,16 @@ const ShowBooks = () => {
           marginBottom: 3,
         }}
       >
-        {/* <div className="input_container"> 
-                <input type="text" className="input_field" placeholder="Search..."/>
-                <button className="search_btn">Search</button>
-            </div> */}
-        <TextField id="outlined-basic" label="Search" variant="outlined" />
+       
         {/* definisan onChange dogadjaj, svaki put kada se promeni izabrana opcija pozvace se funkcija filterByGenre  */}
-        <FormControl>
+        <FormControl sx={{width: '30%'}}>
           <InputLabel id="demo-select-small-label">Genre</InputLabel>
           <Select
             labelId="demo-select-small-label"
             id="genre-select"
             label="Genre"
             onChange={filterByGenre}
+            
           >
             <MenuItem value="0">
               <em>None</em>
@@ -100,6 +97,7 @@ const ShowBooks = () => {
             ))}
           </Select>
         </FormControl>
+        {/* OVO JE KOD PRE MUI/A */}
         {/* <select className="select" onChange={filterByGenre}>
                 {/* ova opcija nam sluzi samo da ponistimo filter, inace ovo se resava pomocu dodatnog dugmeta za resetovanje filtera */}
         {/* <option value='0'>Genre</option> */}
@@ -114,6 +112,7 @@ const ShowBooks = () => {
       {/* <div className="books_container">  */}
       {/* Kontejner za prikaz svih knjiga, posto se knjige prikazuju u vidu kartica, a to nije jednostavan html element, onda mozemo da tu jednu karticu predstavimo novom komponentom, u nasem slucaju je to komponenta ShowBook i toj komponenti prosledjujemo knjigu koju treba da prikaze.
         Posto ne znamo koliko knjiga imamo u listi onda opet dinamicki pravimo prikaz tako sto korisimo map funkciju samo sad objekte book pretvaramo u ShowBook elemente.
+        MUI element GRID zna da sam rasporedi elemente u vidu mreze, u grid containeru se obavezno nalaze Grid elementi koji su oznaceni sa item
          */}
       <Grid container spacing={3}>
         {showBooks.map((b) => (
