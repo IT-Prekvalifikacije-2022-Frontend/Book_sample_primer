@@ -6,4 +6,5 @@
 <ol> 
   <li> Cas 1 - Prikaz knjiga </li>
   <li> Cas 2 - Dodavanje nove knjige, prikaz jedne knjige i brisanje </li>
+  <li> Cas 3 - Sredjena pocetna stranica i stranice za prikaz i dodavanje nove knjige, dodata stranica za izmenu knjige, dodate teme </li> 
 </ol>
