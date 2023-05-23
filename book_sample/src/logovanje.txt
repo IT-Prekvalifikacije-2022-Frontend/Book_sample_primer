@@ -1,0 +1,20 @@
+1. definisali modal za logovanje
+    //polja: username i password
+    //dugmici: cancel - zatvorimo login i login - korisnik se loguje
+2. App komponenta izmenjena tako da se u okviru nje nalazi dugme koje pokrece logovanje, tj otvara dialog za logovanje 
+--- App komunicira sa login modalom 
+3. Ako se neko uspesno uloguje izmenjeno je da se umesto login dugmeta prikaze njegovo ime i dodata je UserMenu komponenta koja modeluje menu koji se pojavi kada kliknemo na ime korisnika koji je ulogovan
+
+
+1. definisete komponentu za logovanje 
+    --login -> uputite zahtev ka back-endu 
+                -> DA -> dobijene podatke sacuvamo u localStorage-uputite
+                -> NE -> korisniku prikazemo poruku
+
+    -- logovanje uspesno i saljemo zahteve ka back/endu onda svaki put moramo da citamo podatke iz localStorage-a
+    const u = localStorage.getItem("user");
+    if(u){
+        const user = JSON.parse(u);
+        const header = {'token' : user.token}
+    }
+    fetch(url, headers: header)
