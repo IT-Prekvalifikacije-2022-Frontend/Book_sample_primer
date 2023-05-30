@@ -10,6 +10,9 @@ import {
   Typography,
   Container,
   FormHelperText,
+  Stack,
+  Chip,
+  Autocomplete
 } from "@mui/material";
 import { useState } from "react";
 // import './book_form.css';
@@ -22,7 +25,8 @@ const BookForm = () => {
   const [year, setYear] = useState("");
   const [rating, setRating] = useState("");
   const [genre, setGenre] = useState("");
-  const [author, setAuthor] = useState("");
+  const [selectedAuthors, setSelectedAuthors] = useState([]);
+  const [selectedAuthor, setSelectedAuthor] = useState(null); 
 
   const [globalError, setGlobalError] = useState(false);
   const errorMessageTemplate = "Please enter the ";
@@ -36,7 +40,7 @@ const BookForm = () => {
   // u loaderu smo definisali da vraca niz u kojem je prvi element autori, a drugi zanrovi
   const loader_data = useLoaderData(); // [authors, genres]
   const genres = loader_data[1];
-  const authors = loader_data[0];
+  const [authors, setAuthors] = useState(loader_data[0]);
   // useNavigate je hook u sklopu react-router-dom biblioteke i sluzi za programsku navigaciju u aplikaciji
   const navigate = useNavigate();
 
@@ -46,9 +50,9 @@ const BookForm = () => {
     // new_book je objekat koji cemo proslediti serveru, izgled objekta je definisan na strani servera i imena atributa moraju da se poklapaju sa imenima atributa na serveru
 
     // ovde cemo za svaki slucaj da proverimo da li je korisnik uneo sve podatke ako nije ispisacemo mu poruku
-    if(title == '' || isbn == '' || year == '' || genre == 0 || author == 0){
+    if (title == "" || isbn == "" || year == "" || genre == 0 || selectedAuthors.size == 0) {
       // dodacu novo stanje koje ce mi samo ovde sluziti i to je globalna greska da korisnik nije popunio nista u formi
-      setGlobalError('Please fill all fields in the form');
+      setGlobalError("Please fill all fields in the form");
       return; // ne smem da dodam knjigu
     }
 
@@ -58,7 +62,7 @@ const BookForm = () => {
       year: year,
       rating: rating,
       genre: genre,
-      authors: [author],
+      authors: selectedAuthors,
     };
     // posto je POST zahtev onda fetch funkciji pored url/a prosledjujemo i dodatne podatke kao sto su metod, zaglavlje u kojem definisemo kakve podatke saljemo i body gde definisemo koji su to podaci koji saljemo
     let response = await fetch("http://localhost:8080/api/v1/book", {
@@ -195,7 +199,10 @@ const BookForm = () => {
           />
         </FormControl>
 
-        <FormControl sx={{ width: "100%", marginBottom: "15px" }} error={genreError}>
+        <FormControl
+          sx={{ width: "100%", marginBottom: "15px" }}
+          error={genreError}
+        >
           <InputLabel id="demo-select-small-label">Genre</InputLabel>
           <Select
             labelId="demo-select-small-label"
@@ -223,7 +230,48 @@ const BookForm = () => {
           <FormHelperText>{genreError}</FormHelperText>
         </FormControl>
 
-        <FormControl sx={{ width: "100%" }} error={authorError}> 
+        <FormControl sx={{ width: "100%" }} error={authorError}>
+          <Stack direction="column">
+            {/* kontrola koja prikazuje autore koje smo odabrali */}
+            <Typography> Authors </Typography>
+            {/* Autor 1     Autor 2 ... */}
+            <Stack direction='row'>
+              {
+                selectedAuthors.map((a, ii) => <Chip 
+                  label={a}
+                   onDelete={() =>{
+                    const a = selectedAuthors.filter((v, i) => i != ii);
+                    setSelectedAuthors(a);
+                  }                    
+                  }
+                />)
+              }
+            </Stack>
+            {/* kontrola iz koje biram autore */}
+            <Stack direction='row' sx={{width: '100%'}}>
+              <Autocomplete options={
+                authors.filter(a => selectedAuthors.every(vv => vv != a.name))} 
+              getOptionLabel={a => a.name}
+            renderInput={(params) => <TextField {...params}/>} 
+            sx={{width: '90%'}}
+            value={selectedAuthor}
+             onChange={(e, v) => {setSelectedAuthor(v)} } />
+              <Button disabled={selectedAuthor === null}
+              onClick={() => {
+                // selektovanog autora ubacujemo u listu
+                console.log(selectedAuthor);
+                if(selectedAuthor != null){
+                  let a = selectedAuthors;
+                  a.push(selectedAuthor.name);
+                  setSelectedAuthors(a);
+                  setSelectedAuthor(null);
+                }
+              }}
+              > Add author </Button>
+            </Stack>
+            
+          </Stack>
+{/* 
           <InputLabel id="select-author-label">Author</InputLabel>
           <Select
             labelId="select-author-label"
@@ -233,10 +281,10 @@ const BookForm = () => {
             required
             onChange={(e) => {
               setAuthor(e.target.value);
-              if(e.target.value == 0){
-                setAuthorError('Please select the author')
-              }else {
-                setAuthorError('')
+              if (e.target.value == 0) {
+                setAuthorError("Please select the author");
+              } else {
+                setAuthorError("");
               }
             }}
           >
@@ -247,11 +295,16 @@ const BookForm = () => {
               <MenuItem value={a.name}> {a.name} </MenuItem>
             ))}
           </Select>
-          <FormHelperText>{authorError}</FormHelperText>
+          <FormHelperText>{authorError}</FormHelperText> */}
         </FormControl>
 
-          {/* dugme ce biti disabled sve dok korisnik ne ispravi sve greske koje ima */}
-        <Button onClick={save} disabled={titleError || yearError || isbnError || authorError || genreError}>
+        {/* dugme ce biti disabled sve dok korisnik ne ispravi sve greske koje ima */}
+        <Button
+          onClick={save}
+          disabled={
+            titleError || yearError || isbnError || authorError || genreError
+          }
+        >
           {" "}
           Save{" "}
         </Button>

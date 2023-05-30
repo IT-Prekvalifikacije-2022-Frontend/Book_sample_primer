@@ -12,6 +12,7 @@ import BookDetails from "./books/BookDetails";
 import AuthorForm from "./authors/AuthorForm";
 import GenreForm from "./genre/GenreForm";
 import BookEdit from "./books/BookEdit";
+import ProtectedRoute from "./ProtectedRoute";
 
 // 1. definisete rute
 // 2. render zamenite App sa RouterProvider-om
@@ -27,6 +28,7 @@ import BookEdit from "./books/BookEdit";
     - loader - dobavljanje podataka pre ucitavanja komponente, zamena za dobavljanje podataka upotrebom hook-a useEffect; uz ovo se obavezno koristi hook useLoaderData i on se koristi u komponenti kako bi preuzeli podatake koje nam dobavi loader
 
 */
+
 const router = createBrowserRouter([
   {
     path: "/",
@@ -34,14 +36,14 @@ const router = createBrowserRouter([
     children: [
       {
         path: "books", // /books
-        element: <ShowBooks />,
+        element: <ProtectedRoute><ShowBooks /></ProtectedRoute> ,
         loader: async () => {
           return fetch("http://localhost:8080/api/v1/book");
         },
       },
       {
         path: "/authors",
-        element: <ShowAuthors />,
+        element:<ProtectedRoute> <ShowAuthors /> </ProtectedRoute> ,
         loader: async () => {
           return fetch("http://localhost:8080/api/v1/author");
         },

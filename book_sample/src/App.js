@@ -187,17 +187,17 @@ function App() {
           </DrawerHeader>
           <Divider />
           <List>
-            <ListItem disablePadding component={NavLink} to="books">
+            {isLogin ?  <ListItem disablePadding component={NavLink} to="books">
               <ListItemButton>
                 <ListItemText primary="Books" />
-              </ListItemButton>
-            </ListItem>
+              </ListItemButton> 
+            </ListItem> : <></>}
             <Divider />
-            <ListItem disablePadding component={NavLink} to="authors">
+             <ListItem disablePadding component={NavLink} to="authors">
               <ListItemButton>
                 <ListItemText primary="Authors" />
               </ListItemButton>
-            </ListItem>
+            </ListItem> 
             <Divider />
             <ListItem disablePadding component={NavLink} to="genres">
               <ListItemButton>
