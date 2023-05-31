@@ -13,6 +13,10 @@ import AuthorForm from "./authors/AuthorForm";
 import GenreForm from "./genre/GenreForm";
 import BookEdit from "./books/BookEdit";
 import ProtectedRoute from "./ProtectedRoute";
+import ErrorDisplay from "./ErrorDisplay";
+import { checkUser } from "./login_logic";
+import AuthorEdit from "./authors/AuthorEdit";
+import AuthorDetails from "./authors/AuthorDetails";
 
 // 1. definisete rute
 // 2. render zamenite App sa RouterProvider-om
@@ -36,17 +40,26 @@ const router = createBrowserRouter([
     children: [
       {
         path: "books", // /books
-        element: <ProtectedRoute><ShowBooks /></ProtectedRoute> ,
-        loader: async () => {
+        // ovo mozemo da koristimo ako ne koristimo loader za ucitavanje podataka zato sto se loader pokrene pre prikaza stranice pa onda i ako ne mozemo da prikazemo stranicu ucitacemo podatke a to nam ne treba
+        // element: <ProtectedRoute><ShowBooks /></ProtectedRoute> , 
+        element: <ShowBooks/>,
+        loader: async () => { //ovo se uradi uvek pre nego sto se podaci prikazu, odnosno pre nego sto se prikaze komponenta
+          //korisnik potreban kako bih prosledili token onda ovde moramo imati proveru da li je korisnik ulogovan i onda ovde mozemo da uradimo i zastitu rute
+          // checkUser funkcija koja proverava da li je neki korisnik ulogovan i isto tako moze da proveri da li je korisnik odgovarajuci po ulozi, ovo smo definisali u fajlu login_logic
+          const user = checkUser(['admin']);
           return fetch("http://localhost:8080/api/v1/book");
         },
+        // definisemo sta ce da se prikaze ako dodje greske, u nasem slucaju prikazace se komponenta ErrorDisplay
+        errorElement: <ErrorDisplay entity="knjiga"/>
       },
       {
         path: "/authors",
-        element:<ProtectedRoute> <ShowAuthors /> </ProtectedRoute> ,
+        element:<ShowAuthors /> ,
         loader: async () => {
+          const user = checkUser(); //samo je bitno da je korisnik ulogovan, nije bitno ko je korisnik
           return fetch("http://localhost:8080/api/v1/author");
         },
+        errorElement: <ErrorDisplay entity="autora"/>
       },
       {
         path: "/genres",
@@ -54,6 +67,7 @@ const router = createBrowserRouter([
         loader: async () => {
           return fetch("http://localhost:8080/api/v1/genre");
         },
+        errorElement: <ErrorDisplay entity="zanrova"/>
       },
       {
         path: "books/new_book",
@@ -78,7 +92,7 @@ const router = createBrowserRouter([
         },
       },
       {
-        // putanja koja prikazuje jednu knjigu
+        // putanja koja prikazuje jednu knjigu za izmenu
         path: "books/edit_book/:id",
         element: <BookEdit />,
         loader: async ({ params }) => {
@@ -97,11 +111,29 @@ const router = createBrowserRouter([
         },
       },
       {
-        path: "authors/add_new",
+        path: "authors/new_author",
         element: <AuthorForm />,
       },
       {
-        path: "genres/add_new",
+        // putanja koja prikazuje komponentu za izmenu autora
+        path: "authors/edit_author/:id",
+        element: <AuthorEdit />,
+        loader: async ({ params }) => {
+          // za izmenu autora nam treba samo autor kojeg zelimo da izmenimo
+          return fetch(`http://localhost:8080/api/v1/author/${params.id}`);
+        
+        },
+      },
+      {
+        // putanja koja prikazuje jednog autora
+        path: "authors/author/:id",
+        element: <AuthorDetails />,
+        loader: async ({ params }) => {
+          return fetch(`http://localhost:8080/api/v1/author/${params.id}`);
+        },
+      },
+      {
+        path: "genres/new_genre",
         element: <GenreForm />,
       },
     ],

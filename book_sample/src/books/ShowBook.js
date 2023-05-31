@@ -26,7 +26,7 @@ Komponenta za prikaz jedne knjige, kao parametar prima knjigu koju treba da prik
 // roditelja => dete ==> ShowBooks -> ShowBook => (props)
 // dete  => roditelja ->  ShowBook -> ShowBooks => pozove se funkcija koja se prosledjena kao props
 
-const ShowBook = ({ book, onDelete }) => {
+const ShowBook = ({ book, onDelete, author }) => {
   const navigate = useNavigate();
 
   const deleteBook = async () => {
@@ -53,6 +53,7 @@ const ShowBook = ({ book, onDelete }) => {
   return (
     <Grid item xs={4}>
       <Card sx={{ marginBottom: 3 }} variant="outlined">
+        
         <CardHeader
           sx={{ display: "flex", textAlign: "center" }}
           title={book.title}
@@ -69,7 +70,8 @@ const ShowBook = ({ book, onDelete }) => {
             alignItems: "center",
           }}
         >
-          <Typography fontSize={25}>{book.authors}</Typography>
+          {/* ako se kartica prikazuje u sklopu AuthorDetails komponente onda ne treba da se prikaze ima autora */}
+          { author ? <></> : <Typography fontSize={25}>{book.authors}</Typography>}
         
           <Grid container spacing={3} alignItems='center' justifyContent='space-between' sx={{padding: '5px'}}> 
           {/* alignItems - vertikalno poravnanje; 
@@ -103,7 +105,8 @@ const ShowBook = ({ book, onDelete }) => {
             </Grid>
           </Grid>
         </CardContent>
-        <CardActions sx={{ display: "flex", justifyContent: "center" }}>
+        {/* ako se kartica prikazuje u sklopu AuthorDetails komponente onda nema akcija nego je samo prikaz */}
+        {author ? <></> : <CardActions sx={{ display: "flex", justifyContent: "center" }}>
           {/* <Button variant='outlined' size='small' onClick={()=> navigate(`book/${book.id}`)}> Info </Button> */}
           {/* <Button variant='outlined' size='small'> Edit </Button> */}
           {/* <Button variant='outlined' size='small' onClick={deleteBook } color='error'> Delete </Button> */}
@@ -128,7 +131,7 @@ const ShowBook = ({ book, onDelete }) => {
               <DeleteIcon />
             </IconButton>
           </Tooltip>
-        </CardActions>
+        </CardActions> }
       </Card>
     </Grid>
   );

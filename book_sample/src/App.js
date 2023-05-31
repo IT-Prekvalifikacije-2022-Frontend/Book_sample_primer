@@ -98,6 +98,7 @@ function App() {
 
   useEffect(() => {
     const u = localStorage.getItem("user");
+    console.log(u);
     if(u){
       setUser(JSON.parse(u));
       setIsLogin(true);
@@ -187,7 +188,8 @@ function App() {
           </DrawerHeader>
           <Divider />
           <List>
-            {isLogin ?  <ListItem disablePadding component={NavLink} to="books">
+            {/* uslovno renderovanje, prikaz knjiga ce da bude dostupan samo ako je ulogovani korisnik admin */}
+            { isLogin && user.role==='admin' ?  <ListItem disablePadding component={NavLink} to="books">
               <ListItemButton>
                 <ListItemText primary="Books" />
               </ListItemButton> 

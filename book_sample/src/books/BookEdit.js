@@ -1,4 +1,20 @@
-import { Box, Button, Container, FormControl, FormHelperText, InputLabel, MenuItem, Rating, Select, TextField, Typography } from "@mui/material";
+import {
+  Autocomplete,
+  Box,
+  Button,
+  Chip,
+  Container,
+  FormControl,
+  FormHelperText,
+  InputLabel,
+  MenuItem,
+  Rating,
+  Select,
+  Stack,
+  TextField,
+  Typography,
+} from "@mui/material";
+import { produce } from "immer";
 import { useState } from "react";
 import { useLoaderData, useNavigate } from "react-router-dom";
 
@@ -12,13 +28,17 @@ const BookEdit = () => {
   // useNavigate je hook u sklopu react-router-dom biblioteke i sluzi za programsku navigaciju u aplikaciji
   const navigate = useNavigate();
 
-  // posto menjamo knjigu onda ce pocetne vrednosti biti vrednosti za tu knjigu
-  const [title, setTitle] = useState(book.title);
-  const [isbn, setIsbn] = useState(book.isbn);
-  const [year, setYear] = useState(book.year);
-  const [rating, setRating] = useState(book.rating);
-  const [genre, setGenre] = useState(book.genre);
-  const [author, setAuthor] = useState(book.authors[0]);
+  // posto menjamo knjigu onda ce pocetne vrednosti biti vrednosti za tu knjigu, ovako smo radili pre ubacivanja Immera
+  // const [title, setTitle] = useState(book.title);
+  // const [isbn, setIsbn] = useState(book.isbn);
+  // const [year, setYear] = useState(book.year);
+  // const [rating, setRating] = useState(book.rating);
+  // const [genre, setGenre] = useState(book.genre);
+  // const [author, setAuthor] = useState(book.authors[0]);
+
+  // dodavanje immer-a
+  const [knjiga, setKnjiga] = useState(book); // kompleksno stanje zato sto je objekat, povezali smo sve atribute knjige u objekat
+  // const [knjiga, setKnjiga] = useImmer(book);
 
   const [globalError, setGlobalError] = useState(false);
   const errorMessageTemplate = "Please enter the ";
@@ -29,33 +49,51 @@ const BookEdit = () => {
   const [genreError, setGenreError] = useState(false);
   const [authorError, setAuthorError] = useState(false);
 
+  // Posto hocemo da napravimo da korisnik moze da izabere vise autora onda cemo to uraditi kao i kod dodavanja nove knjige upotrebom autocomplete elementa tako sto cemo birati jednog po jednog autora i dodavati ih u listu klikom na dugme ADD
+  //treba nam autor da bismo znali koga je korisnik izabrao iz liste i koga treba da dodamo u niz autora za knjigu
+  const [selectedAuthor, setSelectedAuthor] = useState(null);
+
+  // funkcija za izmenu podataka
+  // setKnjiga -> baseState=knjiga, draft - kopija knjige -> koristimo produce funkciju zato sto je kompleksno stanje pa hocemo da na jednostavan nacin izmenimo podatke
+  // izdvojimo u funkciju zato sto sve podatke osim autora menjamo na isti nacin 
+  // da bismo znali koji podatak menjamo definisacemo name atribut za svaki element odnosno za svako polje za unos podataka
+  const changeBook = (e) => {
+    setKnjiga(
+      produce((draft) => {
+        draft[e.target.name] = e.target.value;
+      })
+    );
+  };
+
   const update = async () => {
     // dodavanje nove knjige
     // atribut: vrednost
     // new_book je objekat koji cemo proslediti serveru, izgled objekta je definisan na strani servera i imena atributa moraju da se poklapaju sa imenima atributa na serveru
 
     // ovde cemo za svaki slucaj da proverimo da li je korisnik uneo sve podatke ako nije ispisacemo mu poruku
-    if (title == "" || isbn == "" || year == "" || genre == 0 || author == 0) {
-      // dodacu novo stanje koje ce mi samo ovde sluziti i to je globalna greska da korisnik nije popunio nista u formi
-      setGlobalError("Please fill all fields in the form");
-      return; // ne smem da dodam knjigu
-    }
+    // if (title == "" || isbn == "" || year == "" || genre == 0 || author == 0) {
+    //   // dodacu novo stanje koje ce mi samo ovde sluziti i to je globalna greska da korisnik nije popunio nista u formi
+    //   setGlobalError("Please fill all fields in the form");
+    //   return; // ne smem da dodam knjigu
+    // }
 
-    const new_book = {
-      title: title,
-      isbn: isbn,
-      year: year,
-      rating: rating,
-      genre: genre,
-      authors: [author],
-    };
+    // pre immer-a
+    // const new_book = {
+    //   title: title,
+    //   isbn: isbn,
+    //   year: year,
+    //   rating: rating,
+    //   genre: genre,
+    //   authors: [author],
+    // };
     // posto je PUT zahtev onda fetch funkciji pored url/a prosledjujemo i dodatne podatke kao sto su metod, zaglavlje u kojem definisemo kakve podatke saljemo i body gde definisemo koji su to podaci koji saljemo
     let response = await fetch(`http://localhost:8080/api/v1/book/${book.id}`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify(new_book),
+      // ubacivanjem immera ovde samo prosledimo knjigu koju smo definisali kao stanje
+      body: JSON.stringify(knjiga),
     });
     console.log(response);
     if (response.ok) {
@@ -110,11 +148,15 @@ const BookEdit = () => {
           required
           id="outlined-required"
           label="Book title"
-          value={title}
+          value={knjiga.title}
           helperText={titleError}
           error={titleError === "" ? false : true}
+          name="title" //ovo dodajemo zbog izmene stanja objekta knjiga
           onChange={(e) => {
-            setTitle(e.target.value);
+            // setTitle(e.target.value);
+            // koristimo immer
+            changeBook(e); // -> name=title => knjiga[e.target.name] = e.targer.value
+            // knjiga[title] =
             if (e.target.value !== "") setTitleError("");
             else setTitleError(errorMessageTemplate + " title of the book.");
           }}
@@ -128,11 +170,13 @@ const BookEdit = () => {
           required
           id="outlined-isbn-input"
           label="ISBN"
-          value={isbn}
+          value={knjiga.isbn}
           error={isbnError}
           helperText={isbnError}
+          name="isbn"
           onChange={(e) => {
-            setIsbn(e.target.value);
+            // setIsbn(e.target.value);
+            changeBook(e);
             console.log(JSON.stringify(e.target.value.match(/[0-9]{13}/)));
             if (e.target.value.match(/[0-9]{13}$/) == null)
               setIsbnError(
@@ -149,13 +193,15 @@ const BookEdit = () => {
           fullWidth
           id="outlined-year-input"
           label="Year"
-          value={year}
+          value={knjiga.year}
           required
           type="number"
           error={yearError}
+          name="year"
           helperText={yearError ? yearError : "Example: 1990, 2002, 2020..."}
           onChange={(e) => {
-            setYear(e.target.value);
+            // setYear(e.target.value);
+            changeBook(e);
             checkYear(e.target.value);
           }}
         />
@@ -176,10 +222,11 @@ const BookEdit = () => {
           <Typography>Rating</Typography>
           <Rating
             required
-            name="simple-controlled"
-            value={rating}
+            name="rating"
+            value={knjiga.rating}
             onChange={(event, newValue) => {
-              setRating(newValue);
+              // setRating(newValue);
+              changeBook(event);
             }}
           />
         </FormControl>
@@ -194,15 +241,17 @@ const BookEdit = () => {
             id="genre-select"
             label="Genre"
             required
+            name="genre"
             onChange={(e) => {
-              setGenre(e.target.value);
+              // setGenre(e.target.value);
+              changeBook(e);
               if (e.target.value == 0) {
                 setGenreError("Please select the genre");
               } else {
                 setGenreError("");
               }
             }}
-            value={genre}
+            value={knjiga.genre}
           >
             <MenuItem value="0">
               <em>None</em>
@@ -215,16 +264,90 @@ const BookEdit = () => {
           <FormHelperText>{genreError}</FormHelperText>
         </FormControl>
 
+      {/* Omogucivanje da korisnik izabere vise autora i prikaz izabranih autora kako bi korisnik u svakom momentu znao koje autore je izabrao */}
         <FormControl sx={{ width: "100%" }} error={authorError}>
+          <Stack direction="column">
+            {/* kontrola koja prikazuje autore koje smo odabrali */}
+            <Typography> Authors </Typography>
+            {/* Autor 1     Autor 2 ... */}
+            <Stack direction="row">
+              {/* prikazemo sve autore za knjigu koju menjamo */}
+              {knjiga.authors.map((a, ii) => (
+                <Chip
+                  label={a}
+                  onDelete={() => {
+                    const a = knjiga.authors.filter((v, i) => i != ii);
+                    // setSelectedAuthors(a);
+                    // posto radimo brisanje onda iz liste autora treba da izbrisemo odredjenog autora 
+                    setKnjiga(produce((draft)=>{
+                      draft.authors = a; //zameni samo listu autora, sve ostalo ostaje isto
+                    } ))
+                  }}
+                />
+              ))}
+            </Stack>
+            {/* kontrola iz koje biramo autore */}
+            <Stack direction="row" sx={{ width: "100%" }}>
+              <Autocomplete
+              // prikazemo samo autore koji nisu vec izabrani tako da korisnik ne moze da nekog autora duplo izabere
+                options={authors.filter((a) =>
+                  knjiga.authors.every((vv) => vv != a.name)
+                )}
+                getOptionLabel={(a) => a.name}
+                // kako ce biti podatak prikazan
+                renderInput={(params) => <TextField {...params} />}
+                sx={{ width: "90%" }}
+                value={selectedAuthor}
+                onChange={(e, v) => {
+                  // na svaku izmenu tj izbor nekog autora menja se selectedAuthor 
+                  setSelectedAuthor(v);
+                }}
+              />
+              <Button
+              // dugme onemoguceno dok ne izaberemo autora
+                disabled={selectedAuthor === null}
+                onClick={() => {
+                  // selektovanog autora ubacujemo u listu
+                  console.log(selectedAuthor);
+                  if (selectedAuthor != null) {
+                    setKnjiga(
+                      produce((draft) => {
+                        //dodamo autora u listu svih autora koji su vezani za knjigu
+                          draft.authors.push(selectedAuthor.name);
+                      }
+                      )
+                    )
+                    // posto smo autora dodali u listu autora onda on vise ne treba da bude izabran 
+                    setSelectedAuthor(null); 
+                  }
+                }}
+              >
+                {" "}
+                Add author{" "}
+              </Button>
+            </Stack>
+          </Stack>
+        </FormControl>
+        {/* Kontrola koja je zakomentarisana je kontrola koju smo prvo koristili, promenili smo je zato sto smo kod nje mogli da izaberemo samo 1 autora */}
+        {/* <FormControl sx={{ width: "100%" }} error={authorError}>
           <InputLabel id="select-author-label">Author</InputLabel>
           <Select
             labelId="select-author-label"
             id="author-select"
             label="Author"
-            value={author}
+            value={knjiga.authors.length == 0 ? 0 : knjiga.authors[0]}
             required
             onChange={(e) => {
-              setAuthor(e.target.value);
+              // setAuthor(e.target.value);
+              setKnjiga(
+                produce((draft) => {
+                  if(knjiga.authors.length == 0){
+                    knjiga.authors.push(e.target.value);
+                  }else 
+                    draft.authors[0] = e.target.value
+                }
+                )
+              )
               if (e.target.value == 0) {
                 setAuthorError("Please select the author");
               } else {
@@ -240,7 +363,7 @@ const BookEdit = () => {
             ))}
           </Select>
           <FormHelperText>{authorError}</FormHelperText>
-        </FormControl>
+        </FormControl> */}
 
         {/* dugme ce biti disabled sve dok korisnik ne ispravi sve greske koje ima */}
         <Button

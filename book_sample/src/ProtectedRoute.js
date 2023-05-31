@@ -18,7 +18,12 @@ const ProtectedRoute = ({children}) => {
         if(!user || user === undefined){
             //niko nije ulogovan i ne sme da se otvori odredjena stranica
             setLoggedUser(false);
-            return navigate('/');
+            // return navigate('/');
+            const err = {
+                cause: "security",
+                message: "Korisnik nema pravo pristupa"
+            };
+            throw err;
         }
         setLoggedUser(true);
     }

@@ -23,7 +23,8 @@ const LoginModal  = ({show, handleCloseModal}) => {
             localStorage.setItem("user", JSON.stringify({
                 username : "Test", 
                 name: "Pera",
-                surname: "Peric"
+                surname: "Peric", 
+                role: "admin"
             }));
 
             // pozove back-end, na osnovu odgovara koji back-end vrati odredjujemo da li se neko ulogovao ili ne 
