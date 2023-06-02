@@ -46,7 +46,7 @@ const router = createBrowserRouter([
         loader: async () => { //ovo se uradi uvek pre nego sto se podaci prikazu, odnosno pre nego sto se prikaze komponenta
           //korisnik potreban kako bih prosledili token onda ovde moramo imati proveru da li je korisnik ulogovan i onda ovde mozemo da uradimo i zastitu rute
           // checkUser funkcija koja proverava da li je neki korisnik ulogovan i isto tako moze da proveri da li je korisnik odgovarajuci po ulozi, ovo smo definisali u fajlu login_logic
-          const user = checkUser(['admin']);
+          const user = checkUser(['sys_user']);
           return fetch("http://localhost:8080/api/v1/book");
         },
         // definisemo sta ce da se prikaze ako dodje greske, u nasem slucaju prikazace se komponenta ErrorDisplay
